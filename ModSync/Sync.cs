@@ -28,7 +28,7 @@ public static class Sync
             ))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
-
+    
     public static SyncPathFileList GetUpdatedFiles(
         List<SyncPath> syncPaths,
         SyncPathModFiles localModFiles,
@@ -37,22 +37,32 @@ public static class Sync
     )
     {
         return syncPaths
+            //iterate through the syncpaths
             .Select(syncPath =>
             {
+                //if there are no local files in this syncpath return an empty list
                 if (!localModFiles.TryGetValue(syncPath.path, out var localPathFiles))
                     return new KeyValuePair<string, List<string>>(syncPath.path, []);
-
+                //query for files that exist in both the remote and local files for this syncpath
                 var query = remoteModFiles[syncPath.path].Keys.Intersect(localPathFiles.Keys, StringComparer.OrdinalIgnoreCase);
-
+                //enforced sync ignores this next check
                 if (!syncPath.enforced)
+                    //iterate through the list of files that are on both the remote and local files list
                     query = query.Where(file =>
+                        //try to get previousremotemodfiles for the current sync path and store it to previouspathfiles
+                        //if there is no previousremotemodfiles for the currentsync path then the current syncpath is included in the GetUpdatedFiles
                         !previousRemoteModFiles.TryGetValue(syncPath.path, out var previousPathFiles)
+                        //if the previousremotemodfiles did contain the current sync path then we need to check if the current file was in previousremotemodfiles
+                        //if it was in previousremotemodfiles store the previous version to modFile
+                        //if it wasn't then it's a new file and the current files is included in GetUpdatedFiles
                         || !previousPathFiles.TryGetValue(file, out var modFile)
+                        //if the previousremotemodfiles contained the current file then compare the previous hash to the current hash of the REMOTE mod file ONLY
+                        //if those hashes don't match then the current files is included in GetUpdatedFiles
                         || remoteModFiles[syncPath.path][file].hash != modFile.hash
                     );
-
+                //iterate through those results and find only files where the local file hash and the remote file hash don't match
                 query = query.Where(file => remoteModFiles[syncPath.path][file].hash != localPathFiles[file].hash);
-
+                //return the results as a list of KVPs
                 return new KeyValuePair<string, List<string>>(syncPath.path, query.ToList());
             })
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);

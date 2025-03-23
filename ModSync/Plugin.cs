@@ -193,12 +193,13 @@ public class Plugin : BaseUnityPlugin
     private async Task SyncMods(SyncPathFileList filesToAdd, SyncPathFileList filesToUpdate, SyncPathFileList directoriesToCreate)
     {
         updateWindow.Hide();
-
+        //create the pending updates directory
         if (!Directory.Exists(PENDING_UPDATES_DIR))
             Directory.CreateDirectory(PENDING_UPDATES_DIR);
-
+        //iterate through the syncpaths that are enabled
         foreach (var syncPath in EnabledSyncPaths)
         {
+            //go through the list of new folders and create them
             foreach (var dir in directoriesToCreate[syncPath.path])
             {
                 try
@@ -215,12 +216,17 @@ public class Plugin : BaseUnityPlugin
         downloadCount = 0;
         totalDownloadCount = 0;
 
+        //limit to 8 simultaneous downloads
         var limiter = new SemaphoreSlim(8);
+
+        //make a list of files that need to be downloaded
         var filesToDownload = EnabledSyncPaths
+            //iterate through the enabled sync paths and add paths that are in filestoadd and filestoupdate inside the current sync path
             .Select((syncPath) => new KeyValuePair<string, List<string>>(syncPath.path, [.. filesToAdd[syncPath.path], .. filesToUpdate[syncPath.path]]))
             .ToDictionary((kvp) => kvp.Key, (kvp) => kvp.Value);
 
         Logger.LogInfo($"Starting download of {UpdateCount} files.");
+
         downloadTasks = EnabledSyncPaths
             .SelectMany(syncPath =>
                 filesToDownload.TryGetValue(syncPath.path, out var pathFilesToDownload)
