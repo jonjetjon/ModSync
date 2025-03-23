@@ -19,20 +19,26 @@ using UnityEngine;
 
 namespace ModSync;
 
+//dictionary aliases used during sync process
 using SyncPathFileList = Dictionary<string, List<string>>;
 using SyncPathModFiles = Dictionary<string, Dictionary<string, ModFile>>;
 
+//plugin metadata
 [BepInPlugin("corter.modsync", "Corter ModSync", "0.11.1")]
 public class Plugin : BaseUnityPlugin
 {
+    //the modsync_data folder where exclusions, hashes, and logs are stored
     private static readonly string MODSYNC_DIR = Path.Combine(Directory.GetCurrentDirectory(), "ModSync_Data");
+    //the folder where files are downloaded to before being moved to their final destination
     private static readonly string PENDING_UPDATES_DIR = Path.Combine(MODSYNC_DIR, "PendingUpdates");
+    //json file that contains the previous state of mod files to track which files were synced for comparison
     private static readonly string PREVIOUS_SYNC_PATH = Path.Combine(MODSYNC_DIR, "PreviousSync.json");
     private static readonly string LOCAL_HASHES_PATH = Path.Combine(MODSYNC_DIR, "LocalHashes.json");
     private static readonly string REMOVED_FILES_PATH = Path.Combine(MODSYNC_DIR, "RemovedFiles.json");
     private static readonly string LOCAL_EXCLUSIONS_PATH = Path.Combine(MODSYNC_DIR, "Exclusions.json");
     private static readonly string UPDATER_PATH = Path.Combine(Directory.GetCurrentDirectory(), "ModSync.Updater.exe");
-
+    
+    //a default list of exclusions that apply only when the program is being run on a headless client
     private static readonly List<string> HEADLESS_DEFAULT_EXCLUSIONS =
     [
         "BepInEx/plugins/AmandsGraphics.dll",
@@ -46,9 +52,10 @@ public class Plugin : BaseUnityPlugin
         "BepInEx/plugins/TYR_DeClutterer.dll",
     ];
 
-    // Configuration
+    // Configuration variables
     private Dictionary<string, ConfigEntry<bool>> configSyncPathToggles;
     private ConfigEntry<bool> configDeleteRemovedFiles;
+
 
     private List<SyncPath> syncPaths = [];
     private SyncPathModFiles remoteModFiles = [];
@@ -80,13 +87,20 @@ public class Plugin : BaseUnityPlugin
                 + createdDirectories[syncPath.path].Count
             )
             .Sum();
-    private static bool IsHeadless => Chainloader.PluginInfos.ContainsKey("com.fika.headless");
-    private List<SyncPath> EnabledSyncPaths => syncPaths.Where(syncPath => configSyncPathToggles[syncPath.path].Value || syncPath.enforced).ToList();
 
+    //check if the client is headless
+    private static bool IsHeadless => Chainloader.PluginInfos.ContainsKey("com.fika.headless");
+    //get the list of sync paths that are enabled in the configurator(or enforced on the server side)
+    private List<SyncPath> EnabledSyncPaths => syncPaths.Where(syncPath => configSyncPathToggles[syncPath.path].Value || syncPath.enforced).ToList();
+    //determine whether silent mode should be used or not
     private bool SilentMode =>
+        //if we are using a headless client sync should always be silent
         IsHeadless
+        //iterate through all the enabled sync paths
         || EnabledSyncPaths.All(syncPath =>
+            //if a syncpath is set to silent=true in the config file then silentmode remains true
             syncPath.silent
+            // if nothing has changed at all in the syncpath then silentmode remains true
             || (
                 addedFiles[syncPath.path].Count == 0
                 && updatedFiles[syncPath.path].Count == 0
@@ -94,10 +108,13 @@ public class Plugin : BaseUnityPlugin
                 && createdDirectories[syncPath.path].Count == 0
             )
         );
-
+    //determine whether no restart mode should be used
     private bool NoRestartMode =>
+        //iterate through all the enabled sync paths
         EnabledSyncPaths.All(syncPath =>
+            //if restartrequired=false is set in the config file then norestartmode remains true
             !syncPath.restartRequired
+            //if nothing has changed in a path that has restartrequired enabled then norestartmode remains true
             || (
                 addedFiles[syncPath.path].Count == 0
                 && updatedFiles[syncPath.path].Count == 0
@@ -108,6 +125,7 @@ public class Plugin : BaseUnityPlugin
 
     private void AnalyzeModFiles(SyncPathModFiles localModFiles)
     {
+        
         Sync.CompareModFiles(
             Directory.GetCurrentDirectory(),
             EnabledSyncPaths,

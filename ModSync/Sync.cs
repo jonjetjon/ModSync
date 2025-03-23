@@ -14,13 +14,14 @@ using SyncPathModFiles = Dictionary<string, Dictionary<string, ModFile>>;
 
 public static class Sync
 {
+    //takes in localmodfiles and remotemodfiles and finds files that exist only in remotemodfiles
     public static SyncPathFileList GetAddedFiles(List<SyncPath> syncPaths, SyncPathModFiles localModFiles, SyncPathModFiles remoteModFiles)
     {
         return syncPaths
             .Select(syncPath => new KeyValuePair<string, List<string>>(
                 syncPath.path,
                 remoteModFiles[syncPath.path]
-                    .Where((kvp) => !kvp.Value.directory)
+                    .Where((kvp) => !kvp.Value.directory) //ignore directories
                     .Select((kvp) => kvp.Key)
                     .Except(localModFiles.TryGetValue(syncPath.path, out var modFiles) ? modFiles.Keys : new List<string>(), StringComparer.OrdinalIgnoreCase)
                     .ToList()
@@ -192,7 +193,7 @@ public static class Sync
     }
 
     public static void CompareModFiles(
-        string basePath,
+        string basePath, 
         List<SyncPath> syncPaths,
         SyncPathModFiles localModFiles,
         SyncPathModFiles remoteModFiles,
