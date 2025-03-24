@@ -467,26 +467,7 @@ public class Plugin : BaseUnityPlugin
             yield break;
         }
 
-        //check if the client is headless AND the exclusions.json doesn't exist
-        //if this is the case we need to make a new exclusions.json with the default headless exclusions
         Logger.LogDebug("Loading local exclusions");
-        if (IsHeadless && !VFS.Exists(LOCAL_EXCLUSIONS_PATH))
-        {
-            //write the default headless exclusions to exclusions.json
-            try
-            {
-                VFS.WriteTextFile(LOCAL_EXCLUSIONS_PATH, Json.Serialize(HEADLESS_DEFAULT_EXCLUSIONS));
-            }
-            //if that fails exit the mod
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-                Chainloader.DependencyErrors.Add(
-                    $"Could not load {Info.Metadata.Name} due to error writing local exclusions file for headless client. Please check BepInEx/LogOutput.log for more information."
-                );
-                yield break;
-            }
-        }
 
         //load the exclusions.json file if it exists
         try
@@ -500,6 +481,12 @@ public class Plugin : BaseUnityPlugin
                 $"Could not load {Info.Metadata.Name} due to malformed local exclusion data. Please check ModSync_Data/Exclusions.json for errors or delete it, and try again."
             );
             yield break;
+        }
+
+        //add the list of headless exclusions to the exclusions list if we are running headless
+        if (IsHeadless)
+        {
+            localExclusions.AddRange(HEADLESS_DEFAULT_EXCLUSIONS);
         }
 
         Logger.LogDebug("Fetching exclusions");
