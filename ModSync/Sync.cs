@@ -202,6 +202,9 @@ public static class Sync
         return new ModFile(hash);
     }
 
+    //takes in the list of syncpaths, the localmodfiles, the remotemodfiles, the previoussync, and the basepath
+    //searches for and outputs added files, updated files, removedfiles, and created directories
+    //sort of a "do all the things" function
     public static void CompareModFiles(
         string basePath, 
         List<SyncPath> syncPaths,

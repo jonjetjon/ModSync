@@ -111,11 +111,13 @@ public class Server(Version pluginVersion)
         return Json.Deserialize<List<string>>(await GetJson("/modsync/exclusions"));
     }
 
+    //asynchronously gets a SyncPathModFiles of remote file hashes from a list of SyncPath objects called syncpaths
     public async Task<SyncPathModFiles> GetRemoteModFileHashes(List<SyncPath> syncPaths)
     {
         return Json.Deserialize<SyncPathModFiles>(
                 await GetJson($"/modsync/hashes?path={string.Join("&path=", syncPaths.Select(path => Uri.EscapeUriString(path.path.Replace(@"\", "/"))))}")
             )
+            //convert the resulting deserialized data to a dictionary so that it can be returned as a SyncPathModFiles
             .ToDictionary(
                 item => item.Key,
                 item => item.Value.ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase),

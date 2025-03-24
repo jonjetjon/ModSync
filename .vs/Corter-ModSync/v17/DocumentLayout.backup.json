@@ -1,26 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\gitrepos\\ModSync\\",
+  "WorkspaceRootPath": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\gitrepos\\modsync\\modsync\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\gitrepos\\modsync\\modsync\\sync.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\sync.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\sync.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\gitrepos\\modsync\\modsync.utility\\syncpath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync.utility\\syncpath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E3525A90-0BF4-44AD-BDC9-0BE6AEBDFBF9}|ModSync.Updater\\ModSync.Updater.csproj|d:\\gitrepos\\modsync\\modsync.updater\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E3525A90-0BF4-44AD-BDC9-0BE6AEBDFBF9}|ModSync.Updater\\ModSync.Updater.csproj|solutionrelative:modsync.updater\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2265D81E-D9CB-4AAD-9263-7E4BB7AB006E}|ModSync.HashTester\\ModSync.HashTester.csproj|d:\\gitrepos\\modsync\\modsync.hashtester\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2265D81E-D9CB-4AAD-9263-7E4BB7AB006E}|ModSync.HashTester\\ModSync.HashTester.csproj|solutionrelative:modsync.hashtester\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,76 +22,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "SyncPath.cs",
-              "DocumentMoniker": "D:\\gitrepos\\ModSync\\ModSync.Utility\\SyncPath.cs",
-              "RelativeDocumentMoniker": "ModSync.Utility\\SyncPath.cs",
-              "ToolTip": "D:\\gitrepos\\ModSync\\ModSync.Utility\\SyncPath.cs",
-              "RelativeToolTip": "ModSync.Utility\\SyncPath.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T20:54:11.203Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Sync.cs",
-              "DocumentMoniker": "D:\\gitrepos\\ModSync\\ModSync\\Sync.cs",
+              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Sync.cs",
               "RelativeDocumentMoniker": "ModSync\\Sync.cs",
-              "ToolTip": "D:\\gitrepos\\ModSync\\ModSync\\Sync.cs",
+              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Sync.cs",
               "RelativeToolTip": "ModSync\\Sync.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAUwN0AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T20:50:40.761Z",
+              "WhenOpened": "2025-03-23T23:44:15.042Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Plugin.cs",
-              "DocumentMoniker": "D:\\gitrepos\\ModSync\\ModSync\\Plugin.cs",
+              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
               "RelativeDocumentMoniker": "ModSync\\Plugin.cs",
-              "ToolTip": "D:\\gitrepos\\ModSync\\ModSync\\Plugin.cs",
+              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
               "RelativeToolTip": "ModSync\\Plugin.cs",
-              "ViewState": "AgIAAHAAAAAAAAAAAAAcwIAAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAABoCAAAAAAAAAAAiwDICAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T20:28:05.883Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\gitrepos\\ModSync\\ModSync.Updater\\Program.cs",
-              "RelativeDocumentMoniker": "ModSync.Updater\\Program.cs",
-              "ToolTip": "D:\\gitrepos\\ModSync\\ModSync.Updater\\Program.cs",
-              "RelativeToolTip": "ModSync.Updater\\Program.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAowGAAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T20:25:46.365Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\gitrepos\\ModSync\\ModSync.HashTester\\Program.cs",
-              "RelativeDocumentMoniker": "ModSync.HashTester\\Program.cs",
-              "ToolTip": "D:\\gitrepos\\ModSync\\ModSync.HashTester\\Program.cs",
-              "RelativeToolTip": "ModSync.HashTester\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T20:25:37.708Z",
+              "WhenOpened": "2025-03-23T23:42:53.194Z",
               "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Server.cs",
+              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Server.cs",
+              "RelativeDocumentMoniker": "ModSync\\Server.cs",
+              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Server.cs",
+              "RelativeToolTip": "ModSync\\Server.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAowHQAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-23T23:19:58.705Z",
+              "EditorCaption": ""
             }
           ]
         }

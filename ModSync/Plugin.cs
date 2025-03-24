@@ -125,9 +125,10 @@ public class Plugin : BaseUnityPlugin
 
     private void AnalyzeModFiles(SyncPathModFiles localModFiles)
     {
-        
+        //call the comparemodfiles function from sync.cs
         Sync.CompareModFiles(
             Directory.GetCurrentDirectory(),
+            //use only the enabled syncpaths, this is how sync.cs knows which paths to check
             EnabledSyncPaths,
             localModFiles,
             remoteModFiles,
@@ -146,12 +147,16 @@ public class Plugin : BaseUnityPlugin
 
         if (UpdateCount > 0)
         {
+            //if we are in silent mode start the sync immediately
             if (SilentMode)
                 Task.Run(() => SyncMods(addedFiles, updatedFiles, createdDirectories));
+            //otherwise open the window that asks the users if they want to update
             else
                 updateWindow.Show();
         }
         else
+            //if we don't have anything to update skip straight to writemodsyncdata
+            //this ensures we have an accurate record of remotemodfiles even if no files were updated
             WriteModSyncData();
     }
 
@@ -299,8 +304,11 @@ public class Plugin : BaseUnityPlugin
 
     private void WriteModSyncData()
     {
+        //write the current state of remotemodfiles to the PREVIOUS_SYNC_PATH
         VFS.WriteTextFile(PREVIOUS_SYNC_PATH, Json.Serialize(remoteModFiles));
+        //if any files are removed and files are supposed to be removed(removefiles in the config or enforced set to true)
         if (EnabledSyncPaths.Any(syncPath => (configDeleteRemovedFiles.Value || syncPath.enforced) && removedFiles[syncPath.path].Count != 0))
+            //write the list of removed files to REMOVED_FILES_PATH
             VFS.WriteTextFile(REMOVED_FILES_PATH, Json.Serialize(removedFiles.SelectMany(kvp => kvp.Value).ToList()));
     }
 
@@ -329,22 +337,28 @@ public class Plugin : BaseUnityPlugin
     private IEnumerator StartPlugin()
     {
         cts = new CancellationTokenSource();
+        //if pending updates folder or the removed files path exists when the plugin is started it means an update didn't finish properly, log a warning and continue
         if (Directory.Exists(PENDING_UPDATES_DIR) || File.Exists(REMOVED_FILES_PATH))
             Logger.LogWarning(
                 "ModSync found previous update. Updater may have failed, check the 'ModSync_Data/Updater.log' for details. Attempting to continue."
             );
 
         Logger.LogDebug("Fetching server version");
+        //asynchronously use an httpclient to get the version of the mod from the server at /modsync/version
         var versionTask = server.GetModSyncVersion();
+        //even though the versionTask is asynchronous we don't want to continue until we know the version number, so let's wait until the server responds to that request
         yield return new WaitUntil(() => versionTask.IsCompleted);
         try
         {
             var version = versionTask.Result;
 
             Logger.LogInfo($"ModSync found server version: {version}");
+            //if the version doesn't match throw a warning in the log and continue anyway
             if (version != Info.Metadata.Version.ToString())
                 Logger.LogWarning($"ModSync server version does not match plugin version. Found server version: {version}. Plugin may not work as expected!");
         }
+        //if we couldn't get the server version we don't want to continue because the serverside mod might not be installed and that would cause problems
+        //instead we will just exit the plugin anyway
         catch (Exception e)
         {
             Logger.LogError(e);
@@ -355,12 +369,15 @@ public class Plugin : BaseUnityPlugin
         }
 
         Logger.LogDebug("Fetching sync paths");
+        //get the list of sync paths from the server config using httpclient
         var syncPathTask = server.GetModSyncPaths();
         yield return new WaitUntil(() => syncPathTask.IsCompleted);
         try
         {
+            //store that result to the local syncpaths variable
             syncPaths = syncPathTask.Result;
         }
+        //if we can't get syncpaths from the server the mod can't work so we need to exit
         catch (Exception e)
         {
             Logger.LogError(e);
@@ -370,22 +387,28 @@ public class Plugin : BaseUnityPlugin
             yield break;
         }
 
+       
         Logger.LogDebug("Processing sync paths");
+        //validate the sync paths
+        //iterate through each syncpath in the syncPaths variable
         foreach (var syncPath in syncPaths)
         {
+            //check whether the current path is relative to the location of the mod or a static filepath
             if (Path.IsPathRooted(syncPath.path))
             {
                 Chainloader.DependencyErrors.Add(
                     $"Could not load {Info.Metadata.Name} due to invalid sync path. Paths must be relative to SPT server root! Invalid path '{syncPath}'"
                 );
+                //if one of the paths is static quit the plugin
                 yield break;
             }
-
+            //extrapolate the full static filepath from the current relative path and ensure it is within the SPT folder(this prevents syncing files outside the spt folder)
             if (!Path.GetFullPath(syncPath.path).StartsWith(Directory.GetCurrentDirectory()))
             {
                 Chainloader.DependencyErrors.Add(
                     $"Could not load {Info.Metadata.Name} due to invalid sync path. Paths must be within SPT server root! Invalid path '{syncPath}'"
                 );
+                //if one of the paths is outside the SPT folder quit the plugin
                 yield break;
             }
         }
