@@ -413,6 +413,7 @@ public class Plugin : BaseUnityPlugin
             }
         }
 
+        //run the migrator(this is used to fix problems caused by updating from an older version of modsync, see migrator.cs for more details)
         Logger.LogDebug("Running migrator");
         new Migrator(Directory.GetCurrentDirectory()).TryMigrate(Info.Metadata.Version, syncPaths);
 
@@ -420,13 +421,19 @@ public class Plugin : BaseUnityPlugin
 
         try
         {
+            //we are going to bind each sync path to a configurator option for the f12 menu
+            //make a new boolean toggle box
             configSyncPathToggles = syncPaths
                 .Select(syncPath => new KeyValuePair<string, ConfigEntry<bool>>(
                     syncPath.path,
                     Config.Bind(
+                        //the section will be called synced paths
                         "Synced Paths",
+                        //the key in the configuration file will be the name of the path(replace \ with / since it by default uses the path as the name
                         syncPath.name.Replace("\\", "/"),
+                        //default the box to checked
                         syncPath.enabled,
+                        //dynamically create the description using the path of the syncpath
                         new ConfigDescription(
                             $"Should the mod attempt to sync files from {syncPath.path.Replace("\\", "/")}",
                             null,
@@ -438,12 +445,13 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception e)
         {
+            //this really shouldn't ever be reached but we should catch this error just in case
             Logger.LogError($"Error binding sync path configs. This is likely a bug with ModSync. Please report it in the FIKA discord.\n{e}");
             Chainloader.DependencyErrors.Add(
                 $"Could not load {Info.Metadata.Name} due to error binding sync path configs. Please check your server configuration and try again."
             );
         }
-
+        //get previous sync data from previoussync.json
         Logger.LogDebug("Loading previous sync data");
         try
         {
@@ -451,6 +459,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception e)
         {
+            //if we can't parse previoussync.json throw a dependency error and quit the mod
             Logger.LogError(e);
             Chainloader.DependencyErrors.Add(
                 $"Could not load {Info.Metadata.Name} due to malformed previous sync data. Please check ModSync_Data/PreviousSync.json for errors or delete it, and try again."
@@ -458,13 +467,17 @@ public class Plugin : BaseUnityPlugin
             yield break;
         }
 
+        //check if the client is headless AND the exclusions.json doesn't exist
+        //if this is the case we need to make a new exclusions.json with the default headless exclusions
         Logger.LogDebug("Loading local exclusions");
         if (IsHeadless && !VFS.Exists(LOCAL_EXCLUSIONS_PATH))
         {
+            //write the default headless exclusions to exclusions.json
             try
             {
                 VFS.WriteTextFile(LOCAL_EXCLUSIONS_PATH, Json.Serialize(HEADLESS_DEFAULT_EXCLUSIONS));
             }
+            //if that fails exit the mod
             catch (Exception e)
             {
                 Logger.LogError(e);
@@ -475,6 +488,7 @@ public class Plugin : BaseUnityPlugin
             }
         }
 
+        //load the exclusions.json file if it exists
         try
         {
             localExclusions = VFS.Exists(LOCAL_EXCLUSIONS_PATH) ? Json.Deserialize<List<string>>(VFS.ReadTextFile(LOCAL_EXCLUSIONS_PATH)) : [];
