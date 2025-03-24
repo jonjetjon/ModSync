@@ -106,6 +106,7 @@ public static class Sync
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
+    //gets a list of directories that exist in remotemodfiles that do not exist in localmodfiles
     public static SyncPathFileList GetCreatedDirectories(
         string basePath,
         List<SyncPath> syncPaths,
@@ -114,14 +115,21 @@ public static class Sync
     )
     {
         return syncPaths
+            //iterate through all the syncpaths
             .Select(syncPath =>
             {
                 return new KeyValuePair<string, List<string>>(
+                    //use the current syncpath as the key in the KVP
                     syncPath.path,
+                    //in the remote files for this syncpath
                     remoteModFiles[syncPath.path]
+                    //only filter for directories
                         .Where((kvp) => kvp.Value.directory)
+                        //grab the directory names
                         .Select((kvp) => kvp.Key)
+                        //exclude directories that exist in localmodfiles
                         .Except(localModFiles[syncPath.path].Keys, StringComparer.OrdinalIgnoreCase)
+                        //double check the directory doesn't already exist in the local filesystem
                         .Where((dir) => !Directory.Exists(Path.Combine(basePath, dir)))
                         .ToList()
                 );
@@ -129,26 +137,39 @@ public static class Sync
             .ToDictionary((kvp) => kvp.Key, (kvp) => kvp.Value);
     }
 
+    //gets a list of all the files in the directory(recursively calls itself to include subdirectories) excluding things that match the regex exclusions
     private static List<string> GetFilesInDirectory(string basePath, string directory, List<Regex> exclusions)
     {
+        //if the current directory string is a file, just return that file
         if (File.Exists(directory))
             return [directory];
-
+        //if the current directory string doesn't exist then return an empty list
         if (!Directory.Exists(directory))
             return [];
 
         return Directory
+            //return all files in the directory(non-recursive)
             .GetFiles(directory, "*", SearchOption.TopDirectoryOnly)
+            //exclude things in the exclusions regex
             .Where((file) => !IsExcluded(exclusions, file.Replace($"{basePath}\\", "")))
+            //take that list and concatenate it with a recursive search
             .Concat(
                 Directory
+                //get all subdirectories(non-recursive)
                     .GetDirectories(directory, "*", SearchOption.TopDirectoryOnly)
+                    //exclude directories that match the exclusion regex
                     .Where((subDir) => !IsExcluded(exclusions, subDir.Replace($"{basePath}\\", "")))
-                    .SelectMany((subDir) => Directory.GetFileSystemEntries(subDir).Length == 0 ? [subDir] : GetFilesInDirectory(basePath, subDir, exclusions))
+                    .SelectMany((subDir) => 
+                        Directory.GetFileSystemEntries(subDir).Length == 0 
+                            //exclude empty subdirectories
+                            ? [subDir] 
+                            //recursively process subdirectories
+                            : GetFilesInDirectory(basePath, subDir, exclusions))
             )
             .ToList();
     }
 
+    //goes through all the files in syncpaths and hashes them using the createmodfile function asynchronously using a semaphore limiter
     public static async Task<SyncPathModFiles> HashLocalFiles(
         string basePath,
         List<SyncPath> syncPaths,
@@ -156,29 +177,41 @@ public static class Sync
         List<Regex> localExclusions
     )
     {
+        //start a stopwatch for logging purposes
         var watch = System.Diagnostics.Stopwatch.StartNew();
         var processedFiles = new HashSet<string>();
+        //use a semaphore to limit concurrent operations to 1024
         var limitOpenFiles = new SemaphoreSlim(1024);
 
         var results = new SyncPathModFiles();
 
+        //loop through all the syncpaths
         foreach (var syncPath in syncPaths)
         {
+            //get the full static path for the current syncpath
             var path = Path.Combine(basePath, syncPath.path);
 
             results[syncPath.path] = (
+                //process files asynchronously using our semaphore
                 await Task.WhenAll(
+                    //merge the local exclusions and remote exclusions
                     GetFilesInDirectory(basePath, path, [.. remoteExclusions, .. syncPath.enforced ? [] : localExclusions])
+                    //avoid processing a file twice
                         .Where((file) => !processedFiles.Contains(file))
+                        //process files in parallel
                         .AsParallel()
                         .Select(
                             async (file) =>
                             {
+                                //wait for an available semaphore slot before processing a file
                                 await limitOpenFiles.WaitAsync();
+                                //compute the filehash
                                 var modFile = await CreateModFile(file);
+                                //release the semaphore slot once we are finished
                                 limitOpenFiles.Release();
-
+                                //add the file to the processedfiles list(used above to prevent processing files multiple times
                                 processedFiles.Add(file);
+                                //return a KVP with a relative path and the hash
                                 return new KeyValuePair<string, ModFile>(file.Replace($"{basePath}\\", ""), modFile);
                             }
                         )
@@ -192,13 +225,17 @@ public static class Sync
         return results;
     }
 
+    //used by hashlocalfiles, this is the function that directly produces the hashes for the files
     public static async Task<ModFile> CreateModFile(string file)
     {
         var hash = "";
 
+        //check if the file is a dictionary
         if (Directory.Exists(file))
+            //return a modfile with an empty string as the hash and the directory boolean set as true
             return new ModFile(hash, true);
 
+        //attempt to hash the file asynchronously
         try
         {
             hash = await ImoHash.HashFile(file);
@@ -208,7 +245,7 @@ public static class Sync
             Plugin.Logger.LogError($"Corter-ModSync: Error hashing '{file}': {e.Message}");
             hash = "";
         }
-
+        //returns a new modfile with the hash of the file as a string(directory boolean is set to false by default)
         return new ModFile(hash);
     }
 
