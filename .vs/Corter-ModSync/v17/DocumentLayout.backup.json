@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\migrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\migrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\sync.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\sync.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|d:\\client.0.16.1.3.35392\\development\\modsync\\modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4413AE8-F4FB-4D5C-8CCD-154AA2B13336}|ModSync\\ModSync.csproj|solutionrelative:modsync\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +30,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Sync.cs",
               "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Sync.cs",
               "RelativeDocumentMoniker": "ModSync\\Sync.cs",
@@ -35,19 +39,19 @@
               "ViewState": "AgIAAMoAAAAAAAAAAAAUwN0AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-23T23:44:15.042Z",
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Plugin.cs",
-              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
-              "RelativeDocumentMoniker": "ModSync\\Plugin.cs",
-              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
-              "RelativeToolTip": "ModSync\\Plugin.cs",
-              "ViewState": "AgIAABoCAAAAAAAAAAAiwDICAAAGAAAAAAAAAA==",
+              "Title": "Migrator.cs",
+              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Migrator.cs",
+              "RelativeDocumentMoniker": "ModSync\\Migrator.cs",
+              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Migrator.cs",
+              "RelativeToolTip": "ModSync\\Migrator.cs",
+              "ViewState": "AgIAAIMAAAAAAAAAAAAAwJEAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T23:42:53.194Z",
+              "WhenOpened": "2025-03-24T02:13:33.224Z",
               "EditorCaption": ""
             },
             {
@@ -57,12 +61,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Plugin.cs",
+              "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
+              "RelativeDocumentMoniker": "ModSync\\Plugin.cs",
+              "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Plugin.cs",
+              "RelativeToolTip": "ModSync\\Plugin.cs",
+              "ViewState": "AgIAAIYBAAAAAAAAAAAqwKEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-23T23:42:53.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Server.cs",
               "DocumentMoniker": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Server.cs",
               "RelativeDocumentMoniker": "ModSync\\Server.cs",
               "ToolTip": "D:\\Client.0.16.1.3.35392\\development\\ModSync\\ModSync\\Server.cs",
               "RelativeToolTip": "ModSync\\Server.cs",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAowHQAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAUwGQAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-23T23:19:58.705Z",
               "EditorCaption": ""

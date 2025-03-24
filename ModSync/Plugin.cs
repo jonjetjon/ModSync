@@ -490,7 +490,7 @@ public class Plugin : BaseUnityPlugin
         }
 
         Logger.LogDebug("Fetching exclusions");
-
+        //now that we have the list of local exclusions we need to get the list of serverside exclusions using an httpclient and store it into the exclusions list
         List<string> exclusions;
         var exclusionsTask = server.GetModSyncExclusions();
         yield return new WaitUntil(() => exclusionsTask.IsCompleted);
@@ -500,6 +500,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception e)
         {
+            //if it fails to get exclusions from the server exit the mod
             Logger.LogError(e);
             Chainloader.DependencyErrors.Add(
                 $"Could not load {Info.Metadata.Name} due to error requesting exclusions. Please ensure the server mod is properly installed and try again."
@@ -507,6 +508,7 @@ public class Plugin : BaseUnityPlugin
             yield break;
         }
 
+        //wait until the UI is ready
         yield return new WaitUntil(() => Singleton<CommonUI>.Instantiated);
 
         Logger.LogDebug("Hashing local files");

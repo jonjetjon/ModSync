@@ -68,6 +68,8 @@ public static class Sync
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
+    
+    //get a list of files that have been removed between previousremotemodfiles and the current state of remotemodfiles
     public static SyncPathFileList GetRemovedFiles(
         List<SyncPath> syncPaths,
         SyncPathModFiles localModFiles,
@@ -76,21 +78,29 @@ public static class Sync
     )
     {
         return syncPaths
+            //iterate through the syncpaths
             .Select(syncPath =>
             {
+                //check if the syncpath exists locally, if it does store it to localPathFiles
                 if (!localModFiles.TryGetValue(syncPath.path, out var localPathFiles))
+                    //if it doesn't exist return an empty list since the file has already been deleted on the local side
                     return new KeyValuePair<string, List<string>>(syncPath.path, []);
 
                 IEnumerable<string> query;
                 if (syncPath.enforced)
+                    //if the path is enforced then find files that exist in the local path that don't exist in in the remotepath
                     query = localPathFiles.Keys.Except(remoteModFiles[syncPath.path].Keys, StringComparer.OrdinalIgnoreCase);
                 else
+                    //if the path is not enforced then we grab the previous remote mod files for the path and store them to previousPathFiles
                     query = !previousRemoteModFiles.TryGetValue(syncPath.path, out var previousPathFiles)
+                    //if there is nothing in the previous path return an empty list since we can't have deleted anything if there was nothing there
                         ? []
+                        //if there were files in the previous remote mod files for that path that were in previous remote files that still exist in local mod files
                         : previousPathFiles
                             .Keys.Intersect(localPathFiles.Keys, StringComparer.OrdinalIgnoreCase)
+                            //filter out files that still exist on the remote(therefore finding the files that were removed on remote between previous and current that exist on local)
                             .Except(remoteModFiles[syncPath.path].Keys, StringComparer.OrdinalIgnoreCase);
-
+                //return a KVP with the files that should be removed
                 return new KeyValuePair<string, List<string>>(syncPath.path, query.ToList());
             })
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
