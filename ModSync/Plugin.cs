@@ -512,6 +512,8 @@ public class Plugin : BaseUnityPlugin
         yield return new WaitUntil(() => Singleton<CommonUI>.Instantiated);
 
         Logger.LogDebug("Hashing local files");
+
+        //start an asynchronous task that hashes all the local files in enabled syncpaths using our list of exclusions
         var localModFilesTask = Sync.HashLocalFiles(
             Directory.GetCurrentDirectory(),
             EnabledSyncPaths,
@@ -519,12 +521,15 @@ public class Plugin : BaseUnityPlugin
             localExclusions.Select(Glob.Create).ToList()
         );
 
+        //wait until the hashing task finishes and store the result
         yield return new WaitUntil(() => localModFilesTask.IsCompleted);
         var localModFiles = localModFilesTask.Result;
 
         VFS.WriteTextFile(LOCAL_HASHES_PATH, Json.Serialize(localModFiles));
 
         Logger.LogDebug("Fetching remote file hashes");
+
+        //this whole block grabs the remote hashes from the server for the enabled sync paths and then organized them based on whether they are enforced or excluded
         var remoteHashesTask = server.GetRemoteModFileHashes(EnabledSyncPaths);
         yield return new WaitUntil(() => remoteHashesTask.IsCompleted);
         try
@@ -556,6 +561,7 @@ public class Plugin : BaseUnityPlugin
             );
         }
 
+        //this section compares the local and remote hashes to detect changes
         Logger.LogDebug("Comparing file hashes");
         try
         {
